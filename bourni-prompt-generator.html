@@ -41,9 +41,8 @@
     <input type="text" id="singer1" placeholder="ex: jimmy somerville" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
-    <input type="text" id="singer2" placeholder="ex: jean jacques goldman" onblur="correctName(this)">
+    <input type="text" id="singer2" placeholder="ex: céline dion" onblur="correctName(this)">
 
-    <!-- Le reste du formulaire reste identique -->
     <label>Époque / Année</label>
     <select id="era">
       <option value="">Aucune époque particulière</option>
@@ -61,11 +60,11 @@
     <label>Cible Radio</label>
     <select id="radioTarget">
       <option value="">Aucune cible particulière</option>
-      <option value="NRJ">NRJ (hits modernes)</option>
-      <option value="Chérie FM">Chérie FM (romantique)</option>
-      <option value="Nostalgie">Nostalgie (variété rétro)</option>
-      <option value="FG">FG (électro)</option>
-      <option value="RTL2">RTL2 (pop rock)</option>
+      <option value="NRJ">NRJ</option>
+      <option value="Chérie FM">Chérie FM</option>
+      <option value="Nostalgie">Nostalgie</option>
+      <option value="FG">FG</option>
+      <option value="RTL2">RTL2</option>
     </select>
 
     <label>Styles Musicaux (5 maximum)</label>
@@ -85,6 +84,9 @@
 
     <label>Style des paroles / style de la musique</label>
     <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman...">
+
+    <label>Ad Libs</label>
+    <input type="checkbox" id="adlib"> <label for="adlib" style="display:inline;">Autoriser les ad-libs (parenthèses réservées uniquement aux ad-libs)</label>
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
@@ -117,12 +119,11 @@
       if (artistCorrections[value]) input.value = artistCorrections[value];
     }
 
-    // ... (le reste du code des styles et structure reste le même)
-
     const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
+    // Styles et Architecture (inchangés)
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -158,6 +159,7 @@
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
       const autolyrics = document.getElementById('autolyrics').checked;
+      const adlib = document.getElementById('adlib').checked;
       const duration = document.getElementById('duration').value;
 
       // Correction orthographe
@@ -177,17 +179,22 @@
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
-      // === PROMPT BIEN STRUCTURÉ ET PRIORITAIRE ===
+      // Prompt ultra prioritaire
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
-      prompt += `VOIX PRINCIPALE (PRIORITÉ ABSOLUE) : ${singer1}\n`;
-      if (singer2) prompt += `VOIX SECONDE (PRIORITÉ ABSOLUE) : ${singer2}\n`;
-      prompt += `Utilise UNIQUEMENT la voix de ${singer1} (et ${singer2} si duo). Voix très réaliste, timbre exact, style de chant fidèle à l'artiste.\n\n`;
+      // Voix en une seule ligne avec forte insistance
+      if (singer2) {
+        prompt += `VOIX EXCLUSIVE : ${singer1} et ${singer2} (utilise UNIQUEMENT ces deux voix, pas d'autres chanteurs).\n`;
+      } else {
+        prompt += `VOIX EXCLUSIVE : ${singer1} (utilise UNIQUEMENT cette voix, très réaliste et fidèle à l'artiste).\n`;
+      }
 
-      if (title) prompt += `Titre de la chanson : "${title}"\n`;
+      prompt += `Interdiction totale d'indications entre parenthèses pour les noms des chanteurs. Les parenthèses sont réservées uniquement aux ad-libs.\n\n`;
+
+      if (title) prompt += `Titre : "${title}"\n`;
       prompt += `Langue : ${langText}\n`;
       if (era) prompt += `Époque : ${era}\n`;
-      if (radio) prompt += `Style adapté à la radio ${radio}\n`;
+      if (radio) prompt += `Style adapté à ${radio}\n`;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}\n`;
       prompt += `Ambiance : ${mood}\n`;
       prompt += `Durée : environ ${duration} minutes\n\n`;
@@ -195,10 +202,11 @@
       prompt += `Structure obligatoire : ${structure.join(" - ")}\n\n`;
 
       if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
-      if (autolyrics) prompt += `Écris des paroles complètes, fortes et faciles à chanter.\n`;
-      if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n\n`;
+      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir.\n`;
+      if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n`;
+      if (adlib) prompt += `Ajoute des ad-libs naturels entre parenthèses quand c'est pertinent.\n\n`;
 
-      prompt += `IMPORTANT : Mélodie extrêmement catchy, refrain puissant et mémorable dès la première écoute. Production professionnelle, mix radio puissant, dynamique, émotions fortes.`;
+      prompt += `Mélodie extrêmement catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant.`;
 
       document.getElementById('result').textContent = prompt;
     }
