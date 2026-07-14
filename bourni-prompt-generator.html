@@ -13,12 +13,13 @@
     .row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .row select, .row input { flex: 1; min-width: 180px; }
     .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; margin: 10px 0; }
+    .checkbox-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; }
     button { margin-top: 25px; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
     .generate-btn { background: #ff00ff; color: white; }
     .copy-btn { background: #00ff88; color: black; }
     .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
-  input:focus,select:focus,textarea:focus{outline:none;border-color:#ff00ff;box-shadow:0 0 8px #ff00ff;}button:hover{transform:translateY(-2px);transition:.2s}.container{box-shadow:0 20px 40px rgba(0,0,0,.45)}
-</style>
+    textarea { resize: vertical; min-height: 80px; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -87,11 +88,17 @@
     <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman...">
 
     <label>Ad Libs</label>
-    <input type="checkbox" id="adlib"> <label for="adlib" style="display:inline;">Autoriser les ad-libs</label>
+    <div class="checkbox-group" style="gap: 5px;">
+      <input type="checkbox" id="adlib">
+      <label for="adlib" style="display: inline;">Autoriser les ad-libs</label>
+    </div>
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
-    <input type="checkbox" id="autolyrics" checked> <label for="autolyrics" style="display:inline;">Laisser l'IA écrire les paroles</label>
+    <div class="checkbox-group" style="gap: 5px; margin-top: 5px;">
+      <input type="checkbox" id="autolyrics" checked>
+      <label for="autolyrics" style="display: inline;">Laisser l'IA écrire les paroles</label>
+    </div>
 
     <label>Durée approximative</label>
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
@@ -110,7 +117,8 @@
       "renaud": "Renaud",
       "julio iglesias": "Julio Iglesias",
       "jimmy somerville": "Jimmy Somerville",
-      "modern talin": "Modern Talking"
+      "modern talin": "Modern Talking",
+      "modern talking": "Modern Talking"
     };
 
     function correctName(input) {
@@ -122,7 +130,7 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Remplissage des menus
+    // Initialisation des sélecteurs de styles
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -130,6 +138,7 @@
       styleRow.appendChild(select);
     }
 
+    // Initialisation des sélecteurs de structure (ERREUR CORRIGÉE ICI)
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -142,18 +151,13 @@
         select.appendChild(option);
       });
       structRow.appendChild(select);
-    });
+    } // <-- Parentheses fermante enlevée
 
     document.getElementById('duration').addEventListener('input', function() {
       document.getElementById('durationValue').textContent = this.value + " minutes";
     });
 
-    
-function saveSettings(){document.querySelectorAll('input,select,textarea').forEach(e=>{if(!e.id)return;if(e.type==='checkbox')localStorage.setItem(e.id,e.checked);else localStorage.setItem(e.id,e.value);});}
-function loadSettings(){document.querySelectorAll('input,select,textarea').forEach(e=>{if(!e.id)return;const v=localStorage.getItem(e.id);if(v!==null){if(e.type==='checkbox')e.checked=(v==='true');else e.value=v;}});document.getElementById('durationValue').textContent=document.getElementById('duration').value+' minutes';}
-window.addEventListener('DOMContentLoaded',()=>{loadSettings();document.querySelectorAll('input,select,textarea').forEach(e=>{e.addEventListener('input',saveSettings);e.addEventListener('change',saveSettings);});});
-
-function generatePrompt() {
+    function generatePrompt() {
       const title = document.getElementById('songTitle').value.trim();
       let singer1 = document.getElementById('singer1').value.trim() || "un artiste";
       let singer2 = document.getElementById('singer2').value.trim();
@@ -185,7 +189,7 @@ function generatePrompt() {
 
       if (singer2) {
         prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
-        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES (${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, ils chantent ensemble sur le refrain).\n\n`;
+        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES. ${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, et ils chantent ensemble sur le refrain. Ne mélange pas les deux voix en une seule.\n\n`;
       } else {
         prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
       }
@@ -213,8 +217,18 @@ function generatePrompt() {
     function copyPrompt() {
       const text = document.getElementById('result').textContent;
       if (text) {
-        navigator.clipboard.writeText(text);
-        const b=document.querySelector('.copy-btn');const o=b.textContent;b.textContent='✔ Prompt copié !';setTimeout(()=>b.textContent=o,2000);
+        navigator.clipboard.writeText(text)
+          .then(() => alert("✅ Prompt copié !"))
+          .catch(() => {
+            // Fallback pour les navigateurs anciens
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("✅ Prompt copié !");
+          });
       } else {
         alert("Génère d'abord un prompt !");
       }
