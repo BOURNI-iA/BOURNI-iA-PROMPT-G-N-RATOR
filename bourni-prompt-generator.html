@@ -17,7 +17,8 @@
     .generate-btn { background: #ff00ff; color: white; }
     .copy-btn { background: #00ff88; color: black; }
     .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
-  </style>
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#ff00ff;box-shadow:0 0 8px #ff00ff;}button:hover{transform:translateY(-2px);transition:.2s}.container{box-shadow:0 20px 40px rgba(0,0,0,.45)}
+</style>
 </head>
 <body>
   <div class="container">
@@ -130,7 +131,7 @@
     }
 
     const structRow = document.getElementById('structureRow');
-    const defaults = ["intro","verse","hook","verse","hook","outro"];
+    const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
       const select = document.createElement('select');
       structureOptions.forEach(opt => {
@@ -147,7 +148,12 @@
       document.getElementById('durationValue').textContent = this.value + " minutes";
     });
 
-    function generatePrompt() {
+    
+function saveSettings(){document.querySelectorAll('input,select,textarea').forEach(e=>{if(!e.id)return;if(e.type==='checkbox')localStorage.setItem(e.id,e.checked);else localStorage.setItem(e.id,e.value);});}
+function loadSettings(){document.querySelectorAll('input,select,textarea').forEach(e=>{if(!e.id)return;const v=localStorage.getItem(e.id);if(v!==null){if(e.type==='checkbox')e.checked=(v==='true');else e.value=v;}});document.getElementById('durationValue').textContent=document.getElementById('duration').value+' minutes';}
+window.addEventListener('DOMContentLoaded',()=>{loadSettings();document.querySelectorAll('input,select,textarea').forEach(e=>{e.addEventListener('input',saveSettings);e.addEventListener('change',saveSettings);});});
+
+function generatePrompt() {
       const title = document.getElementById('songTitle').value.trim();
       let singer1 = document.getElementById('singer1').value.trim() || "un artiste";
       let singer2 = document.getElementById('singer2').value.trim();
@@ -178,10 +184,10 @@
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
       if (singer2) {
-        prompt += `TAGS OBLIGATOIRES : ${singer1}, ${singer2}, Duet\n`;
+        prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
         prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES (${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, ils chantent ensemble sur le refrain).\n\n`;
       } else {
-        prompt += `TAGS OBLIGATOIRES : ${singer1}\n`;
+        prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
       }
 
       prompt += `Respecte STRICTEMENT les tags obligatoires ci-dessus.\n\n`;
@@ -208,7 +214,7 @@
       const text = document.getElementById('result').textContent;
       if (text) {
         navigator.clipboard.writeText(text);
-        alert("✅ Prompt copié !");
+        const b=document.querySelector('.copy-btn');const o=b.textContent;b.textContent='✔ Prompt copié !';setTimeout(()=>b.textContent=o,2000);
       } else {
         alert("Génère d'abord un prompt !");
       }
