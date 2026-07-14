@@ -3,32 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOURNI iA PROMPT GÉNÉRATOR</title>
+  <title>BOURNI iA PROMPT GENERATOR</title>
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1e1e2f, #2a2a45); color: #fff; margin: 0; padding: 20px; }
-    h1 { text-align: center; color: #ff00ff; text-shadow: 0 0 15px #ff00ff; }
-    .container { max-width: 1100px; margin: 0 auto; background: rgba(0,0,0,0.75); padding: 30px; border-radius: 15px; }
-    label { display: block; margin: 15px 0 6px; font-weight: bold; }
-    input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333; color: white; }
-    .row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-    .row select, .row input { flex: 1; min-width: 180px; }
-    .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; margin: 10px 0; }
-    .checkbox-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; }
-    button { margin-top: 25px; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
-    .generate-btn { background: #ff00ff; color: white; }
-    .copy-btn { background: #00ff88; color: black; }
-    .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
-    textarea { resize: vertical; min-height: 80px; }
+    :root {
+      --primary: #ff00ff;
+      --primary-dark: #cc00cc;
+      --secondary: #00ff88;
+      --bg-dark: #1e1e2f;
+      --bg-darker: #1a1a2e;
+      --bg-card: rgba(0, 0, 0, 0.7);
+      --text: #ffffff;
+      --text-secondary: #b0b0b0;
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark), #2a2a45);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.5s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      text-shadow: 0 0 20px var(--primary);
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+      border-radius: 2px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 8px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.95em;
+    }
+
+    input[type="text"],
+    input[type="range"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #2a2a3e;
+      color: white;
+      font-size: 1em;
+      transition: var(--transition);
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 0, 255, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .row select,
+    .row input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal;
+      cursor: pointer;
+      font-size: 0.95em;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--primary);
+      transform: scale(1.1);
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1em;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .generate-btn {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .copy-btn {
+      background: var(--secondary);
+      color: black;
+    }
+
+    .copy-btn.copied {
+      background: #4CAF50;
+      animation: pulse 0.5s ease;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      background: var(--bg-darker);
+      border-radius: 10px;
+      white-space: pre-wrap;
+      font-size: 0.95em;
+      line-height: 1.8;
+      border-left: 4px solid var(--primary);
+      animation: fadeIn 0.5s ease;
+      max-height: 500px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .result::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .result::-webkit-scrollbar-track {
+      background: #2a2a3e;
+      border-radius: 4px;
+    }
+
+    .result::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .result::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+
+    .result::before {
+      content: "🎵 PROMPT GÉNÉRÉ";
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--bg-darker);
+      padding: 0 10px;
+      font-size: 0.8em;
+      color: var(--primary);
+      border-radius: 4px;
+    }
+
+    .duration-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .duration-value {
+      color: var(--primary);
+      font-weight: bold;
+      min-width: 100px;
+    }
+
+    input[type="range"] {
+      width: auto;
+      flex: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .checkbox-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .row {
+        flex-direction: column;
+      }
+    }
+
+    /* Effet de glow pour les boutons */
+    .generate-btn {
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    }
+
+    .copy-btn {
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>BOURNI iA PROMPT GÉNÉRATOR</h1>
+    <h1>BOURNI iA PROMPT GENERATOR</h1>
 
     <div class="row">
-      <div style="flex:2">
+      <div style="flex: 2;">
         <label>Titre de la chanson</label>
-        <input type="text" id="songTitle" placeholder="ex: A la fin de l’été">
+        <input type="text" id="songTitle" placeholder="ex: À la fin de l'été">
       </div>
     </div>
 
@@ -40,10 +319,10 @@
     </div>
 
     <label>Chanteur 1 (voix principale)</label>
-    <input type="text" id="singer1" placeholder="ex: jimmy somerville" onblur="correctName(this)">
+    <input type="text" id="singer1" placeholder="ex: Male ou laissez vide" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
-    <input type="text" id="singer2" placeholder="ex: céline dion" onblur="correctName(this)">
+    <input type="text" id="singer2" placeholder="ex: Female ou laissez vide" onblur="correctName(this)">
 
     <label>Époque / Année</label>
     <select id="era">
@@ -94,23 +373,28 @@
     </div>
 
     <label>Paroles (optionnel)</label>
-    <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
+    <textarea id="lyrics" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
     <div class="checkbox-group" style="gap: 5px; margin-top: 5px;">
       <input type="checkbox" id="autolyrics" checked>
       <label for="autolyrics" style="display: inline;">Laisser l'IA écrire les paroles</label>
     </div>
 
     <label>Durée approximative</label>
-    <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
-    <span id="durationValue">3 minutes</span>
+    <div class="duration-container">
+      <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
+      <span class="duration-value" id="durationValue">3 minutes</span>
+    </div>
 
-    <button class="generate-btn" onclick="generatePrompt()">🚀 GÉNÉRER LE PROMPT</button>
-    <button class="copy-btn" onclick="copyPrompt()">📋 Copier le Prompt</button>
+    <div class="buttons-container">
+      <button class="generate-btn" onclick="generatePrompt()">🚀 GÉNÉRER LE PROMPT</button>
+      <button class="copy-btn" onclick="copyPrompt()">📋 COPIER LE PROMPT</button>
+    </div>
 
     <div class="result" id="result"></div>
   </div>
 
   <script>
+    // Liste des corrections d'artistes
     const artistCorrections = {
       "celine dion": "Céline Dion",
       "jean jacques goldman": "Jean-Jacques Goldman",
@@ -118,45 +402,149 @@
       "julio iglesias": "Julio Iglesias",
       "jimmy somerville": "Jimmy Somerville",
       "modern talin": "Modern Talking",
-      "modern talking": "Modern Talking"
+      "modern talking": "Modern Talking",
+      "mylene farmer": "Mylène Farmer",
+      "eddy mitchell": "Eddie Mitchell",
+      "charles aznavour": "Charles Aznavour",
+      "francis cabrel": "Francis Cabrel",
+      "johnny hallyday": "Johnny Hallyday",
+      "patricia kaas": "Patricia Kaas",
+      "veronique sanson": "Véronique Sanson",
+      "alain bashung": "Alain Bashung",
+      "indochine": "Indochine",
+      "calogero": "Calogero",
+      "jean-jacques goldman": "Jean-Jacques Goldman"
     };
 
-    function correctName(input) {
-      const value = input.value.toLowerCase().trim();
-      if (artistCorrections[value]) input.value = artistCorrections[value];
-    }
+    // Liste des styles musicaux
+    const musicStyles = [
+      "pop", "rock", "rap", "electronic", "latin", "dance", "french pop", "chanson",
+      "indie pop", "r&b", "soul", "funk", "reggae", "electro", "synthpop", "dream pop",
+      "indie", "acoustic", "electropop", "chill", "trap", "house", "ambient", "dance pop",
+      "soft rock", "progressive", "emo", "latin pop", "bossa nova", "disco", "new wave",
+      "vaporwave", "hyperpop", "lo-fi hip hop", "phonk", "retrowave"
+    ];
 
-    const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
+    // Liste des options de structure
+    const structureOptions = [
+      "intro", "instrumental", "drop", "pré-hook", "pré-chorus", "verse", "hook",
+      "chorus", "post-chorus", "bridge", "break", "outro", "end", "non indiqué"
+    ];
 
-    const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialiser les sélecteurs de styles
+      const styleRow = document.getElementById('styleRow');
+      for (let i = 0; i < 5; i++) {
+        const select = document.createElement('select');
+        select.innerHTML = `<option value="">Style ${i+1}</option>` +
+          musicStyles.map(s => `<option value="${s}">${s}</option>`).join('');
+        styleRow.appendChild(select);
+      }
 
-    // Initialisation des sélecteurs de styles
-    const styleRow = document.getElementById('styleRow');
-    for (let i = 0; i < 5; i++) {
-      const select = document.createElement('select');
-      select.innerHTML = `<option value="">Style ${i+1}</option>` + musicStyles.map(s => `<option value="${s}">${s}</option>`).join('');
-      styleRow.appendChild(select);
-    }
+      // Initialiser les sélecteurs de structure
+      const structRow = document.getElementById('structureRow');
+      const defaults = ["intro", "verse", "chorus", "verse", "chorus", "outro"];
+      for (let i = 0; i < 6; i++) {
+        const select = document.createElement('select');
+        structureOptions.forEach(opt => {
+          const option = document.createElement('option');
+          option.value = opt;
+          option.textContent = opt;
+          if (opt === defaults[i]) option.selected = true;
+          select.appendChild(option);
+        });
+        structRow.appendChild(select);
+      }
 
-    // Initialisation des sélecteurs de structure (ERREUR CORRIGÉE ICI)
-    const structRow = document.getElementById('structureRow');
-    const defaults = ["intro","verse","chorus","verse","chorus","outro"];
-    for (let i = 0; i < 6; i++) {
-      const select = document.createElement('select');
-      structureOptions.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        if (opt === defaults[i]) option.selected = true;
-        select.appendChild(option);
+      // Charger les paramètres sauvegardés
+      loadParameters();
+
+      // Écouteur pour la durée
+      document.getElementById('duration').addEventListener('input', function() {
+        document.getElementById('durationValue').textContent = this.value + " minutes";
+        saveParameters();
       });
-      structRow.appendChild(select);
-    } // <-- Parentheses fermante enlevée
 
-    document.getElementById('duration').addEventListener('input', function() {
-      document.getElementById('durationValue').textContent = this.value + " minutes";
+      // Sauvegarder automatiquement lors des changements
+      document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('change', saveParameters);
+        el.addEventListener('input', saveParameters);
+      });
     });
 
+    // Fonction pour corriger les noms d'artistes
+    function correctName(input) {
+      const value = input.value.toLowerCase().trim();
+      if (artistCorrections[value]) {
+        input.value = artistCorrections[value];
+        saveParameters();
+      }
+    }
+
+    // Fonction pour sauvegarder les paramètres
+    function saveParameters() {
+      const params = {
+        songTitle: document.getElementById('songTitle').value,
+        singer1: document.getElementById('singer1').value,
+        singer2: document.getElementById('singer2').value,
+        era: document.getElementById('era').value,
+        radioTarget: document.getElementById('radioTarget').value,
+        mood: document.getElementById('mood').value,
+        lyricsStyle: document.getElementById('lyricsStyle').value,
+        lyrics: document.getElementById('lyrics').value,
+        autolyrics: document.getElementById('autolyrics').checked,
+        adlib: document.getElementById('adlib').checked,
+        duration: document.getElementById('duration').value,
+        langFR: document.getElementById('langFR').checked,
+        langEN: document.getElementById('langEN').checked,
+        langES: document.getElementById('langES').checked,
+        styles: Array.from(document.querySelectorAll('#styleRow select')).map(s => s.value),
+        structure: Array.from(document.querySelectorAll('#structureRow select')).map(s => s.value)
+      };
+      localStorage.setItem('promptGeneratorParams', JSON.stringify(params));
+    }
+
+    // Fonction pour charger les paramètres
+    function loadParameters() {
+      const saved = localStorage.getItem('promptGeneratorParams');
+      if (saved) {
+        const params = JSON.parse(saved);
+        document.getElementById('songTitle').value = params.songTitle || '';
+        document.getElementById('singer1').value = params.singer1 || '';
+        document.getElementById('singer2').value = params.singer2 || '';
+        document.getElementById('era').value = params.era || '';
+        document.getElementById('radioTarget').value = params.radioTarget || '';
+        document.getElementById('mood').value = params.mood || '';
+        document.getElementById('lyricsStyle').value = params.lyricsStyle || '';
+        document.getElementById('lyrics').value = params.lyrics || '';
+        document.getElementById('autolyrics').checked = params.autolyrics !== false;
+        document.getElementById('adlib').checked = params.adlib !== false;
+        document.getElementById('duration').value = params.duration || 3;
+        document.getElementById('langFR').checked = params.langFR !== false;
+        document.getElementById('langEN').checked = params.langEN !== false;
+        document.getElementById('langES').checked = params.langES !== false;
+
+        // Charger les styles
+        if (params.styles) {
+          document.querySelectorAll('#styleRow select').forEach((s, i) => {
+            s.value = params.styles[i] || '';
+          });
+        }
+
+        // Charger la structure
+        if (params.structure) {
+          document.querySelectorAll('#structureRow select').forEach((s, i) => {
+            s.value = params.structure[i] || '';
+          });
+        }
+
+        // Mettre à jour l'affichage de la durée
+        document.getElementById('durationValue').textContent = (params.duration || 3) + " minutes";
+      }
+    }
+
+    // Fonction pour générer le prompt
     function generatePrompt() {
       const title = document.getElementById('songTitle').value.trim();
       let singer1 = document.getElementById('singer1').value.trim() || "un artiste";
@@ -170,21 +558,26 @@
       const adlib = document.getElementById('adlib').checked;
       const duration = document.getElementById('duration').value;
 
+      // Correction des noms d'artistes
       singer1 = artistCorrections[singer1.toLowerCase()] || singer1;
       if (singer2) singer2 = artistCorrections[singer2.toLowerCase()] || singer2;
 
+      // Langues
       let languages = [];
       if (document.getElementById('langFR').checked) languages.push("français");
       if (document.getElementById('langEN').checked) languages.push("anglais");
       if (document.getElementById('langES').checked) languages.push("espagnol");
       let langText = languages.length > 1 ? `Mix ${languages.join(" / ")}` : (languages[0] || "français");
 
+      // Styles
       let styles = [];
       document.querySelectorAll('#styleRow select').forEach(s => { if (s.value) styles.push(s.value); });
 
+      // Structure
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
+      // Construction du prompt
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
       if (singer2) {
@@ -211,27 +604,44 @@
 
       prompt += `Mélodie extrêmement catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant.`;
 
+      // Afficher le résultat
       document.getElementById('result').textContent = prompt;
+      saveParameters(); // Sauvegarder après génération
     }
 
+    // Fonction pour copier le prompt avec feedback visuel
     function copyPrompt() {
-      const text = document.getElementById('result').textContent;
-      if (text) {
-        navigator.clipboard.writeText(text)
-          .then(() => alert("✅ Prompt copié !"))
-          .catch(() => {
-            // Fallback pour les navigateurs anciens
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            alert("✅ Prompt copié !");
-          });
-      } else {
-        alert("Génère d'abord un prompt !");
+      const resultDiv = document.getElementById('result');
+      const text = resultDiv.textContent;
+
+      if (!text) {
+        alert("⚠️ Génère d'abord un prompt !");
+        return;
       }
+
+      // Copier dans le presse-papiers
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          const copyBtn = document.querySelector('.copy-btn');
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = "✅ COPIÉ !";
+          copyBtn.classList.add('copied');
+
+          setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        })
+        .catch(() => {
+          // Fallback pour les anciens navigateurs
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          alert("✅ Prompt copié dans le presse-papiers !");
+        });
     }
   </script>
 </body>
