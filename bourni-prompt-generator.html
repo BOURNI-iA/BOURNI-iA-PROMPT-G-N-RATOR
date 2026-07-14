@@ -90,7 +90,7 @@
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
-    <input type="checkbox" id="autolyrics" checked> <label for="autolyrics" style="display:inline;">Laisser l'IA écrire les paroles</label>
+    <input type="checkbox" id="autolyrics" checked> <label for="autolytics" style="display:inline;">Laisser l'IA écrire les paroles</label>
 
     <label>Durée approximative</label>
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
@@ -121,6 +121,7 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
+    // Remplissage des menus
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -174,10 +175,8 @@
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
-      // === PROMPT OPTIMISÉ AVEC TAGS OBLIGATOIRES ===
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
-      // Tags obligatoires voix
       if (singer2) {
         prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
       } else {
@@ -194,21 +193,12 @@
       prompt += `Ambiance : ${mood}\n`;
       prompt += `Structure : ${structure.join(" - ")}\n\n`;
 
-      // Ajout de conseils musicaux selon l'ambiance
-      if (mood.includes("mélancolique") || mood.includes("émouvant")) {
-        prompt += `Utilise une tonalité mineure (idéalement C minor, A minor ou E minor), accords émotionnels, progression I-VI-IV-V ou vi-IV-I-V, cordes dramatiques et piano doux.\n`;
-      } else if (mood.includes("joyeux") || mood.includes("énergique")) {
-        prompt += `Utilise une tonalité majeure (idéalement C major, G major ou F major), progression I-V-vi-IV, rythmique entraînante, claps puissants et guitares lumineuses.\n`;
-      } else if (mood.includes("romantique")) {
-        prompt += `Tonalité majeure ou mineure douce, progression I-vi-IV-V, piano et cordes chaleureuses, rythme sensuel.\n`;
-      }
-
       if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
-      if (autolytics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir.\n`;
+      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir.\n`;
       if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n`;
       if (adlib) prompt += `Ajoute des ad-libs naturels entre parenthèses.\n\n`;
 
-      prompt += `Mélodie extrêmement catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant, dynamique forte.`;
+      prompt += `Mélodie extrêmement catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant.`;
 
       document.getElementById('result').textContent = prompt;
     }
