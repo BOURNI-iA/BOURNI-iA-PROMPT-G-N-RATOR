@@ -38,11 +38,12 @@
     </div>
 
     <label>Chanteur 1 (voix principale)</label>
-    <input type="text" id="singer1" placeholder="ex: celine dion" onblur="correctName(this)">
+    <input type="text" id="singer1" placeholder="ex: jimmy somerville" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
     <input type="text" id="singer2" placeholder="ex: jean jacques goldman" onblur="correctName(this)">
 
+    <!-- Le reste du formulaire reste identique -->
     <label>Époque / Année</label>
     <select id="era">
       <option value="">Aucune époque particulière</option>
@@ -107,6 +108,7 @@
       "goldman": "Jean-Jacques Goldman",
       "renaud": "Renaud",
       "julio iglesias": "Julio Iglesias",
+      "jimmy somerville": "Jimmy Somerville",
       "modern talin": "Modern Talking"
     };
 
@@ -115,11 +117,12 @@
       if (artistCorrections[value]) input.value = artistCorrections[value];
     }
 
+    // ... (le reste du code des styles et structure reste le même)
+
     const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Styles Musicaux
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -127,7 +130,6 @@
       styleRow.appendChild(select);
     }
 
-    // Architecture
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -167,7 +169,6 @@
       if (document.getElementById('langFR').checked) languages.push("français");
       if (document.getElementById('langEN').checked) languages.push("anglais");
       if (document.getElementById('langES').checked) languages.push("espagnol");
-
       let langText = languages.length > 1 ? `Mix ${languages.join(" / ")}` : (languages[0] || "français");
 
       let styles = [];
@@ -176,25 +177,28 @@
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
-      let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
+      // === PROMPT BIEN STRUCTURÉ ET PRIORITAIRE ===
+      let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
-      if (title) prompt += `Titre : "${title}". `;
-      prompt += `Langue : ${langText}. `;
-      if (era) prompt += `Époque : ${era}. `;
-      if (radio) prompt += `Style adapté à ${radio}. `;
-      if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
-      prompt += `Ambiance : ${mood}. Durée environ ${duration} minutes. `;
+      prompt += `VOIX PRINCIPALE (PRIORITÉ ABSOLUE) : ${singer1}\n`;
+      if (singer2) prompt += `VOIX SECONDE (PRIORITÉ ABSOLUE) : ${singer2}\n`;
+      prompt += `Utilise UNIQUEMENT la voix de ${singer1} (et ${singer2} si duo). Voix très réaliste, timbre exact, style de chant fidèle à l'artiste.\n\n`;
 
-      if (singer2) prompt += `Interprété en duo par ${singer1} et ${singer2} (voix exclusives). `;
-      else prompt += `Interprété uniquement par ${singer1} (voix exclusive). `;
+      if (title) prompt += `Titre de la chanson : "${title}"\n`;
+      prompt += `Langue : ${langText}\n`;
+      if (era) prompt += `Époque : ${era}\n`;
+      if (radio) prompt += `Style adapté à la radio ${radio}\n`;
+      if (styles.length) prompt += `Styles : ${styles.join(", ")}\n`;
+      prompt += `Ambiance : ${mood}\n`;
+      prompt += `Durée : environ ${duration} minutes\n\n`;
 
-      prompt += `Structure obligatoire : ${structure.join(" - ")}. `;
+      prompt += `Structure obligatoire : ${structure.join(" - ")}\n\n`;
 
-      if (lyricsStyle) prompt += `Paroles dans le style de ${lyricsStyle}. `;
-      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir. `;
-      if (lyrics) prompt += `Utilise ces paroles : ${lyrics}. `;
+      if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
+      if (autolyrics) prompt += `Écris des paroles complètes, fortes et faciles à chanter.\n`;
+      if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n\n`;
 
-      prompt += `Mélodie extrêmement catchy avec un refrain puissant. Production professionnelle radio.`;
+      prompt += `IMPORTANT : Mélodie extrêmement catchy, refrain puissant et mémorable dès la première écoute. Production professionnelle, mix radio puissant, dynamique, émotions fortes.`;
 
       document.getElementById('result').textContent = prompt;
     }
