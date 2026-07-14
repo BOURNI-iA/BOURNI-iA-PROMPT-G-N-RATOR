@@ -13,12 +13,10 @@
     .row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .row select, .row input { flex: 1; min-width: 180px; }
     .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; margin: 10px 0; }
-    .checkbox-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; }
     button { margin-top: 25px; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
     .generate-btn { background: #ff00ff; color: white; }
     .copy-btn { background: #00ff88; color: black; }
     .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
-    textarea { resize: vertical; min-height: 80px; }
   </style>
 </head>
 <body>
@@ -40,10 +38,10 @@
     </div>
 
     <label>Chanteur 1 (voix principale)</label>
-    <input type="text" id="singer1" placeholder="ex: MALE" onblur="correctName(this)">
+    <input type="text" id="singer1" placeholder="ex: jimmy somerville" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
-    <input type="text" id="singer2" placeholder="ex: FEMALE ou laisser vide" onblur="correctName(this)">
+    <input type="text" id="singer2" placeholder="ex: céline dion" onblur="correctName(this)">
 
     <label>Époque / Année</label>
     <select id="era">
@@ -88,17 +86,11 @@
     <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman...">
 
     <label>Ad Libs</label>
-    <div class="checkbox-group" style="gap: 5px;">
-      <input type="checkbox" id="adlib">
-      <label for="adlib" style="display: inline;">Autoriser les ad-libs</label>
-    </div>
+    <input type="checkbox" id="adlib"> <label for="adlib" style="display:inline;">Autoriser les ad-libs</label>
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
-    <div class="checkbox-group" style="gap: 5px; margin-top: 5px;">
-      <input type="checkbox" id="autolyrics" checked>
-      <label for="autolyrics" style="display: inline;">Laisser l'IA écrire les paroles</label>
-    </div>
+    <input type="checkbox" id="autolyrics" checked> <label for="autolyrics" style="display:inline;">Laisser l'IA écrire les paroles</label>
 
     <label>Durée approximative</label>
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
@@ -117,8 +109,7 @@
       "renaud": "Renaud",
       "julio iglesias": "Julio Iglesias",
       "jimmy somerville": "Jimmy Somerville",
-      "modern talin": "Modern Talking",
-      "modern talking": "Modern Talking"
+      "modern talin": "Modern Talking"
     };
 
     function correctName(input) {
@@ -130,7 +121,7 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Initialisation des sélecteurs de styles
+    // Remplissage des menus
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -138,9 +129,8 @@
       styleRow.appendChild(select);
     }
 
-    // Initialisation des sélecteurs de structure (ERREUR CORRIGÉE ICI)
     const structRow = document.getElementById('structureRow');
-    const defaults = ["intro","verse","chorus","verse","chorus","outro"];
+    const defaults = ["intro","verse","hook","verse","hook","outro"];
     for (let i = 0; i < 6; i++) {
       const select = document.createElement('select');
       structureOptions.forEach(opt => {
@@ -151,7 +141,7 @@
         select.appendChild(option);
       });
       structRow.appendChild(select);
-    } // <-- Parentheses fermante enlevée
+    });
 
     document.getElementById('duration').addEventListener('input', function() {
       document.getElementById('durationValue').textContent = this.value + " minutes";
@@ -188,10 +178,10 @@
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
       if (singer2) {
-        prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
-        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES. ${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, et ils chantent ensemble sur le refrain. Ne mélange pas les deux voix en une seule.\n\n`;
+        prompt += `TAGS OBLIGATOIRES : ${singer1}, ${singer2}, Duet\n`;
+        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES (${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, ils chantent ensemble sur le refrain).\n\n`;
       } else {
-        prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
+        prompt += `TAGS OBLIGATOIRES : ${singer1}\n`;
       }
 
       prompt += `Respecte STRICTEMENT les tags obligatoires ci-dessus.\n\n`;
@@ -217,18 +207,8 @@
     function copyPrompt() {
       const text = document.getElementById('result').textContent;
       if (text) {
-        navigator.clipboard.writeText(text)
-          .then(() => alert("✅ Prompt copié !"))
-          .catch(() => {
-            // Fallback pour les navigateurs anciens
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            alert("✅ Prompt copié !");
-          });
+        navigator.clipboard.writeText(text);
+        alert("✅ Prompt copié !");
       } else {
         alert("Génère d'abord un prompt !");
       }
