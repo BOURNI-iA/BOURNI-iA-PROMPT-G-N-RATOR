@@ -298,6 +298,12 @@
     .copy-btn {
       box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
     }
+
+    /* Style pour les emojis dans le résultat */
+    .result em {
+      font-style: normal;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -319,10 +325,10 @@
     </div>
 
     <label>Chanteur 1 (voix principale)</label>
-    <input type="text" id="singer1" placeholder="ex: Male ou laissez vide" onblur="correctName(this)">
+    <input type="text" id="singer1" placeholder="ex: Jimmy Somerville" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
-    <input type="text" id="singer2" placeholder="ex: Female ou laissez vide" onblur="correctName(this)">
+    <input type="text" id="singer2" placeholder="ex: Céline Dion" onblur="correctName(this)">
 
     <label>Époque / Année</label>
     <select id="era">
@@ -405,6 +411,7 @@
       "modern talking": "Modern Talking",
       "mylene farmer": "Mylène Farmer",
       "eddy mitchell": "Eddie Mitchell",
+      "eddie mitchel": "Eddie Mitchell",
       "charles aznavour": "Charles Aznavour",
       "francis cabrel": "Francis Cabrel",
       "johnny hallyday": "Johnny Hallyday",
@@ -509,38 +516,42 @@
     function loadParameters() {
       const saved = localStorage.getItem('promptGeneratorParams');
       if (saved) {
-        const params = JSON.parse(saved);
-        document.getElementById('songTitle').value = params.songTitle || '';
-        document.getElementById('singer1').value = params.singer1 || '';
-        document.getElementById('singer2').value = params.singer2 || '';
-        document.getElementById('era').value = params.era || '';
-        document.getElementById('radioTarget').value = params.radioTarget || '';
-        document.getElementById('mood').value = params.mood || '';
-        document.getElementById('lyricsStyle').value = params.lyricsStyle || '';
-        document.getElementById('lyrics').value = params.lyrics || '';
-        document.getElementById('autolyrics').checked = params.autolyrics !== false;
-        document.getElementById('adlib').checked = params.adlib !== false;
-        document.getElementById('duration').value = params.duration || 3;
-        document.getElementById('langFR').checked = params.langFR !== false;
-        document.getElementById('langEN').checked = params.langEN !== false;
-        document.getElementById('langES').checked = params.langES !== false;
+        try {
+          const params = JSON.parse(saved);
+          document.getElementById('songTitle').value = params.songTitle || '';
+          document.getElementById('singer1').value = params.singer1 || '';
+          document.getElementById('singer2').value = params.singer2 || '';
+          document.getElementById('era').value = params.era || '';
+          document.getElementById('radioTarget').value = params.radioTarget || '';
+          document.getElementById('mood').value = params.mood || '';
+          document.getElementById('lyricsStyle').value = params.lyricsStyle || '';
+          document.getElementById('lyrics').value = params.lyrics || '';
+          document.getElementById('autolyrics').checked = params.autolyrics !== false;
+          document.getElementById('adlib').checked = params.adlib !== false;
+          document.getElementById('duration').value = params.duration || 3;
+          document.getElementById('langFR').checked = params.langFR !== false;
+          document.getElementById('langEN').checked = params.langEN !== false;
+          document.getElementById('langES').checked = params.langES !== false;
 
-        // Charger les styles
-        if (params.styles) {
-          document.querySelectorAll('#styleRow select').forEach((s, i) => {
-            s.value = params.styles[i] || '';
-          });
+          // Charger les styles
+          if (params.styles) {
+            document.querySelectorAll('#styleRow select').forEach((s, i) => {
+              s.value = params.styles[i] || '';
+            });
+          }
+
+          // Charger la structure
+          if (params.structure) {
+            document.querySelectorAll('#structureRow select').forEach((s, i) => {
+              s.value = params.structure[i] || '';
+            });
+          }
+
+          // Mettre à jour l'affichage de la durée
+          document.getElementById('durationValue').textContent = (params.duration || 3) + " minutes";
+        } catch (e) {
+          console.error("Erreur de chargement des paramètres:", e);
         }
-
-        // Charger la structure
-        if (params.structure) {
-          document.querySelectorAll('#structureRow select').forEach((s, i) => {
-            s.value = params.structure[i] || '';
-          });
-        }
-
-        // Mettre à jour l'affichage de la durée
-        document.getElementById('durationValue').textContent = (params.duration || 3) + " minutes";
       }
     }
 
@@ -580,9 +591,18 @@
       // Construction du prompt
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
+      // NOUVELLE PARTIE POUR LES DUOS (optimisée pour Treblo.com)
       if (singer2) {
         prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
-        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES. ${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, et ils chantent ensemble sur le refrain. Ne mélange pas les deux voix en une seule.\n\n`;
+        prompt += `=== ⚠️ VOICE SEPARATION RULES (MANDATORY) ===\n`;
+        prompt += `This is a DUET. The AI MUST generate TWO DISTINCT VOCAL TRACKS.\n`;
+        prompt += `✅ ${singer1} sings ALONE in: Verse 1, Verse 3, Bridge\n`;
+        prompt += `✅ ${singer2} sings ALONE in: Verse 2, Verse 4, Pre-Chorus\n`;
+        prompt += `✅ BOTH sing TOGETHER ONLY in: Chorus, Outro\n`;
+        prompt += `❌ NEVER merge voices in the same phrase, word, or syllable.\n`;
+        prompt += `❌ NEVER use a single vocal track for both artists.\n`;
+        prompt += `🔊 Use STEREO PANNING: ${singer1} on LEFT channel, ${singer2} on RIGHT channel for solo parts.\n`;
+        prompt += `🎛️ Mix both tracks ONLY during chorus, with ${singer1} 30% left and ${singer2} 30% right.\n\n`;
       } else {
         prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
       }
