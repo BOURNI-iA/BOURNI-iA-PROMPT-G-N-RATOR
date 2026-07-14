@@ -26,10 +26,10 @@
     <input type="text" id="songTitle" placeholder="ex: A la fin de l’été">
 
     <label>Chanteur 1 (voix principale)</label>
-    <input type="text" id="singer1" placeholder="ex: Renaud">
+    <input type="text" id="singer1" placeholder="ex: celine dion" onblur="correctName(this)">
 
     <label>Chanteur 2 (duo - optionnel)</label>
-    <input type="text" id="singer2" placeholder="ex: Céline Dion">
+    <input type="text" id="singer2" placeholder="ex: jean jacques goldman" onblur="correctName(this)">
 
     <label>Cible Radio</label>
     <select id="radioTarget">
@@ -74,10 +74,41 @@
   </div>
 
   <script>
+    // Correction automatique des noms d'artistes
+    const artistCorrections = {
+      "celine dion": "Céline Dion",
+      "celine": "Céline Dion",
+      "jean jacques goldman": "Jean-Jacques Goldman",
+      "goldman": "Jean-Jacques Goldman",
+      "renaud": "Renaud",
+      "julio iglesias": "Julio Iglesias",
+      "michael jackson": "Michael Jackson",
+      "whitney houston": "Whitney Houston",
+      "adele": "Adele",
+      "ed sheeran": "Ed Sheeran",
+      "taylor swift": "Taylor Swift",
+      "beyonce": "Beyoncé",
+      "rihanna": "Rihanna",
+      "georges brassens": "Georges Brassens",
+      "jacques brel": "Jacques Brel",
+      "johnny hallyday": "Johnny Hallyday",
+      "michel sardou": "Michel Sardou",
+      "francis cabrel": "Francis Cabrel",
+      "alain souchon": "Alain Souchon"
+    };
+
+    function correctName(input) {
+      const value = input.value.toLowerCase().trim();
+      if (artistCorrections[value]) {
+        input.value = artistCorrections[value];
+      }
+    }
+
     const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
+    // Styles Musicaux
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -85,6 +116,7 @@
       styleRow.appendChild(select);
     }
 
+    // Architecture
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -111,7 +143,7 @@
       const mood = document.getElementById('mood').value;
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
-      const autolyrics = document.getElementById('autolyrics').checked;
+      const autolyrics = document.getElementById('autolytics').checked;
       const duration = document.getElementById('duration').value;
 
       let styles = [];
@@ -122,7 +154,7 @@
 
       let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
 
-      if (title) prompt += `Titre de la chanson : "${title}". `;
+      if (title) prompt += `Titre : "${title}". `;
       if (radio) prompt += `Style adapté à ${radio}. `;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
       prompt += `Ambiance : ${mood}. Durée environ ${duration} minutes. `;
@@ -145,7 +177,7 @@
       const text = document.getElementById('result').textContent;
       if (text) {
         navigator.clipboard.writeText(text);
-        alert("✅ Prompt copié !");
+        alert("✅ Prompt copié dans le presse-papiers !");
       } else {
         alert("Génère d'abord un prompt !");
       }
