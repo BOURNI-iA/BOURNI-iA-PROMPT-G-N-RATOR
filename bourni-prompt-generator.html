@@ -87,7 +87,7 @@
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
-    <input type="checkbox" id="autolytics" checked> <label for="autolytics" style="display:inline;">Laisser l'IA écrire les paroles</label>
+    <input type="checkbox" id="autolyrics" checked> <label for="autolyrics" style="display:inline;">Laisser l'IA écrire les paroles</label>
 
     <label>Durée approximative</label>
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
@@ -119,6 +119,7 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
+    // Styles Musicaux
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -126,6 +127,7 @@
       styleRow.appendChild(select);
     }
 
+    // Architecture
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -156,7 +158,7 @@
       const autolyrics = document.getElementById('autolyrics').checked;
       const duration = document.getElementById('duration').value;
 
-      // Correction orthographe finale
+      // Correction orthographe
       singer1 = artistCorrections[singer1.toLowerCase()] || singer1;
       if (singer2) singer2 = artistCorrections[singer2.toLowerCase()] || singer2;
 
