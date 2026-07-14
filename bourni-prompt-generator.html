@@ -121,6 +121,7 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
+    // Remplissage des menus
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -178,7 +179,7 @@
 
       if (singer2) {
         prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
-        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES. ${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, et ils chantent ensemble sur le refrain. Ne mélange pas les deux voix en une seule.\n\n`;
+        prompt += `IMPORTANT : Les deux voix doivent être BIEN SÉPARÉES (${singer1} chante certaines parties seul, ${singer2} chante d'autres parties seul, ils chantent ensemble sur le refrain).\n\n`;
       } else {
         prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
       }
