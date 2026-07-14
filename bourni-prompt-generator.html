@@ -15,13 +15,12 @@
     button { margin-top: 25px; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
     .generate-btn { background: #ff00ff; color: white; }
     .copy-btn { background: #00ff88; color: black; }
-    .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.5; }
+    .result { margin-top: 25px; padding: 18px; background: #1a1a2e; border-radius: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>BOURNI iA PROMPT GÉNÉRATOR</h1>
-    <p style="text-align:center; color:#ccc;">Générateur de prompts ultra-optimisés pour IA musicale</p>
 
     <label>Chanteur 1 (voix principale)</label>
     <input type="text" id="singer1" placeholder="ex: Renaud">
@@ -35,17 +34,13 @@
       <option value="NRJ">NRJ (hits modernes)</option>
       <option value="Chérie FM">Chérie FM (romantique)</option>
       <option value="Nostalgie">Nostalgie (variété rétro)</option>
-      <option value="FG">FG (électro moderne)</option>
+      <option value="FG">FG (électro)</option>
       <option value="RTL2">RTL2 (pop rock)</option>
-      <option value="France Bleu">France Bleu (variété chaleureuse)</option>
-      <option value="Skyrock">Skyrock (urban)</option>
     </select>
 
-    <!-- Styles Musicaux -->
     <label>Styles Musicaux (5 maximum)</label>
     <div class="row" id="styleRow"></div>
 
-    <!-- Architecture -->
     <label>Architecture de la chanson</label>
     <div class="row" id="structureRow"></div>
 
@@ -54,21 +49,12 @@
       <option value="très romantique et sensuel">Très Romantique & Sensuel</option>
       <option value="joyeux et entraînant">Joyeux & Entraînant</option>
       <option value="mélancolique et émouvant">Mélancolique & Émouvant</option>
-      <option value="énergique et positif">Énergique & Positif</option>
+      <option value="énergique">Énergique</option>
       <option value="nostalgique">Nostalgique</option>
-      <option value="sensuel et intime">Sensuel & Intime</option>
-    </select>
-
-    <label>Tempo</label>
-    <select id="tempo">
-      <option value="lent (65-80 BPM)">Lent (65-80 BPM)</option>
-      <option value="mid-tempo (90-110 BPM)">Mid-Tempo (90-110 BPM)</option>
-      <option value="upbeat (115-130 BPM)">Upbeat (115-130 BPM)</option>
-      <option value="énergique (130+ BPM)">Énergique (130+ BPM)</option>
     </select>
 
     <label>Style des paroles / style de la musique</label>
-    <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman, poétique, simple...">
+    <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman...">
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
@@ -78,18 +64,18 @@
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
     <span id="durationValue">3 minutes</span>
 
-    <button class="generate-btn" onclick="generatePrompt()">🚀 GÉNÉRER LE PROMPT OPTIMISÉ POUR TUBE</button>
+    <button class="generate-btn" onclick="generatePrompt()">🚀 GÉNÉRER LE PROMPT</button>
     <button class="copy-btn" onclick="copyPrompt()">📋 Copier le Prompt</button>
 
     <div class="result" id="result"></div>
   </div>
 
   <script>
-    const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave","jazz","folk","country","metal","blues","hip-hop"];
+    const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Styles Musicaux (5)
+    // Styles Musicaux
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -97,7 +83,7 @@
       styleRow.appendChild(select);
     }
 
-    // Architecture (6 menus)
+    // Architecture
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -121,10 +107,9 @@
       const singer2 = document.getElementById('singer2').value.trim();
       const radio = document.getElementById('radioTarget').value;
       const mood = document.getElementById('mood').value;
-      const tempo = document.getElementById('tempo').value;
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
-      const autolyrics = document.getElementById('autolytics').checked;
+      const autolyrics = document.getElementById('autolyrics').checked;
       const duration = document.getElementById('duration').value;
 
       let styles = [];
@@ -133,22 +118,22 @@
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
-      let prompt = `Crée un vrai tube musical ultra-mémorisable, extrêmement fredonnable, avec un fort potentiel commercial et radio. `;
+      let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
 
       if (radio) prompt += `Style adapté à ${radio}. `;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
-      prompt += `Ambiance : ${mood}. Tempo : ${tempo}. Durée environ ${duration} minutes. `;
+      prompt += `Ambiance : ${mood}. Durée environ ${duration} minutes. `;
 
-      if (singer2) prompt += `Interprété exclusivement en duo par ${singer1} et ${singer2} (voix très réalistes). `;
-      else prompt += `Interprété uniquement par ${singer1} (voix très réaliste). `;
+      if (singer2) prompt += `Interprété en duo par ${singer1} et ${singer2} (voix exclusives). `;
+      else prompt += `Interprété uniquement par ${singer1} (voix exclusive). `;
 
       prompt += `Structure obligatoire : ${structure.join(" - ")}. `;
 
       if (lyricsStyle) prompt += `Paroles dans le style de ${lyricsStyle}. `;
-      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à chanter. `;
-      if (lyrics) prompt += `Utilise ces paroles comme base : ${lyrics}. `;
+      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir. `;
+      if (lyrics) prompt += `Utilise ces paroles : ${lyrics}. `;
 
-      prompt += `Mélodie ultra-catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant, dynamique forte, émotions intenses, voix claires et expressives.`;
+      prompt += `Mélodie extrêmement catchy avec un refrain puissant. Production professionnelle radio.`;
 
       document.getElementById('result').textContent = prompt;
     }
@@ -157,7 +142,7 @@
       const text = document.getElementById('result').textContent;
       if (text) {
         navigator.clipboard.writeText(text);
-        alert("✅ Prompt copié dans le presse-papiers !");
+        alert("✅ Prompt copié !");
       } else {
         alert("Génère d'abord un prompt !");
       }
