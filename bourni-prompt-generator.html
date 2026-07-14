@@ -22,8 +22,20 @@
   <div class="container">
     <h1>BOURNI iA PROMPT GÉNÉRATOR</h1>
 
-    <label>Titre de la chanson</label>
-    <input type="text" id="songTitle" placeholder="ex: A la fin de l’été">
+    <div class="row">
+      <div>
+        <label>Titre de la chanson</label>
+        <input type="text" id="songTitle" placeholder="ex: A la fin de l’été">
+      </div>
+      <div>
+        <label>Langue</label>
+        <select id="language">
+          <option value="français">Français</option>
+          <option value="anglais">Anglais</option>
+          <option value="mix français/anglais">Mix Français/Anglais</option>
+        </select>
+      </div>
+    </div>
 
     <label>Chanteur 1 (voix principale)</label>
     <input type="text" id="singer1" placeholder="ex: celine dion" onblur="correctName(this)">
@@ -34,7 +46,7 @@
     <label>Époque / Année</label>
     <select id="era">
       <option value="">Aucune époque particulière</option>
-      <option value="50's">50's (vintage)</option>
+      <option value="50's">50's</option>
       <option value="60's">60's</option>
       <option value="70's">70's</option>
       <option value="80's">80's</option>
@@ -88,16 +100,13 @@
   </div>
 
   <script>
-    // Correction automatique des noms
     const artistCorrections = {
       "celine dion": "Céline Dion",
       "celine": "Céline Dion",
       "jean jacques goldman": "Jean-Jacques Goldman",
       "goldman": "Jean-Jacques Goldman",
       "renaud": "Renaud",
-      "julio iglesias": "Julio Iglesias",
-      "michael jackson": "Michael Jackson",
-      "whitney houston": "Whitney Houston"
+      "julio iglesias": "Julio Iglesias"
     };
 
     function correctName(input) {
@@ -109,7 +118,6 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Styles Musicaux
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -117,7 +125,6 @@
       styleRow.appendChild(select);
     }
 
-    // Architecture
     const structRow = document.getElementById('structureRow');
     const defaults = ["intro","verse","chorus","verse","chorus","outro"];
     for (let i = 0; i < 6; i++) {
@@ -143,6 +150,7 @@
       const era = document.getElementById('era').value;
       const radio = document.getElementById('radioTarget').value;
       const mood = document.getElementById('mood').value;
+      const language = document.getElementById('language').value;
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
       const autolyrics = document.getElementById('autolyrics').checked;
@@ -157,6 +165,7 @@
       let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
 
       if (title) prompt += `Titre : "${title}". `;
+      if (language) prompt += `Langue : ${language}. `;
       if (era) prompt += `Époque : ${era}. `;
       if (radio) prompt += `Style adapté à ${radio}. `;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
