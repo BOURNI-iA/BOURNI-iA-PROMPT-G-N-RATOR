@@ -31,6 +31,20 @@
     <label>Chanteur 2 (duo - optionnel)</label>
     <input type="text" id="singer2" placeholder="ex: jean jacques goldman" onblur="correctName(this)">
 
+    <label>Époque / Année</label>
+    <select id="era">
+      <option value="">Aucune époque particulière</option>
+      <option value="50's">50's (vintage)</option>
+      <option value="60's">60's</option>
+      <option value="70's">70's</option>
+      <option value="80's">80's</option>
+      <option value="90's">90's</option>
+      <option value="2000's">2000's</option>
+      <option value="2010's">2010's</option>
+      <option value="2020's">2020's (moderne)</option>
+      <option value="futuriste">Futuriste</option>
+    </select>
+
     <label>Cible Radio</label>
     <select id="radioTarget">
       <option value="">Aucune cible particulière</option>
@@ -74,7 +88,7 @@
   </div>
 
   <script>
-    // Correction automatique des noms d'artistes
+    // Correction automatique des noms
     const artistCorrections = {
       "celine dion": "Céline Dion",
       "celine": "Céline Dion",
@@ -83,25 +97,12 @@
       "renaud": "Renaud",
       "julio iglesias": "Julio Iglesias",
       "michael jackson": "Michael Jackson",
-      "whitney houston": "Whitney Houston",
-      "adele": "Adele",
-      "ed sheeran": "Ed Sheeran",
-      "taylor swift": "Taylor Swift",
-      "beyonce": "Beyoncé",
-      "rihanna": "Rihanna",
-      "georges brassens": "Georges Brassens",
-      "jacques brel": "Jacques Brel",
-      "johnny hallyday": "Johnny Hallyday",
-      "michel sardou": "Michel Sardou",
-      "francis cabrel": "Francis Cabrel",
-      "alain souchon": "Alain Souchon"
+      "whitney houston": "Whitney Houston"
     };
 
     function correctName(input) {
       const value = input.value.toLowerCase().trim();
-      if (artistCorrections[value]) {
-        input.value = artistCorrections[value];
-      }
+      if (artistCorrections[value]) input.value = artistCorrections[value];
     }
 
     const musicStyles = ["pop","rock","rap","electronic","latin","dance","french pop","chanson","indie pop","r&b","soul","funk","reggae","electro","synthpop","dream pop","indie","acoustic","electropop","chill","trap","house","ambient","dance pop","soft rock","progressive","emo","latin pop","bossa nova","disco","new wave","vaporwave","hyperpop","lo-fi hip hop","phonk","retrowave"];
@@ -139,11 +140,12 @@
       const title = document.getElementById('songTitle').value.trim();
       const singer1 = document.getElementById('singer1').value.trim() || "un artiste";
       const singer2 = document.getElementById('singer2').value.trim();
+      const era = document.getElementById('era').value;
       const radio = document.getElementById('radioTarget').value;
       const mood = document.getElementById('mood').value;
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
-      const autolyrics = document.getElementById('autolytics').checked;
+      const autolyrics = document.getElementById('autolyrics').checked;
       const duration = document.getElementById('duration').value;
 
       let styles = [];
@@ -155,6 +157,7 @@
       let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
 
       if (title) prompt += `Titre : "${title}". `;
+      if (era) prompt += `Époque : ${era}. `;
       if (radio) prompt += `Style adapté à ${radio}. `;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
       prompt += `Ambiance : ${mood}. Durée environ ${duration} minutes. `;
@@ -177,7 +180,7 @@
       const text = document.getElementById('result').textContent;
       if (text) {
         navigator.clipboard.writeText(text);
-        alert("✅ Prompt copié dans le presse-papiers !");
+        alert("✅ Prompt copié !");
       } else {
         alert("Génère d'abord un prompt !");
       }
