@@ -53,7 +53,7 @@
       <option value="90's">90's</option>
       <option value="2000's">2000's</option>
       <option value="2010's">2010's</option>
-      <option value="2020's">2020's (moderne)</option>
+      <option value="2020's">2020's</option>
       <option value="futuriste">Futuriste</option>
     </select>
 
@@ -86,7 +86,7 @@
     <input type="text" id="lyricsStyle" placeholder="ex: à la manière de Jean-Jacques Goldman...">
 
     <label>Ad Libs</label>
-    <input type="checkbox" id="adlib"> <label for="adlib" style="display:inline;">Autoriser les ad-libs (parenthèses réservées uniquement aux ad-libs)</label>
+    <input type="checkbox" id="adlib"> <label for="adlib" style="display:inline;">Autoriser les ad-libs (parenthèses uniquement pour ad-libs)</label>
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
@@ -105,9 +105,7 @@
   <script>
     const artistCorrections = {
       "celine dion": "Céline Dion",
-      "celine": "Céline Dion",
       "jean jacques goldman": "Jean-Jacques Goldman",
-      "goldman": "Jean-Jacques Goldman",
       "renaud": "Renaud",
       "julio iglesias": "Julio Iglesias",
       "jimmy somerville": "Jimmy Somerville",
@@ -123,7 +121,6 @@
 
     const structureOptions = ["intro","instrumental","drop","pré-hook","pré-chorus","verse","hook","chorus","post-chorus","bridge","break","outro","end","non indiqué"];
 
-    // Styles et Architecture (inchangés)
     const styleRow = document.getElementById('styleRow');
     for (let i = 0; i < 5; i++) {
       const select = document.createElement('select');
@@ -179,30 +176,26 @@
       let structure = [];
       document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
 
-      // Prompt ultra prioritaire
+      // === PROMPT AVEC TAGS OBLIGATOIRE FORTS ===
       let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
 
-      // Voix en une seule ligne avec forte insistance
-      if (singer2) {
-        prompt += `VOIX EXCLUSIVE : ${singer1} et ${singer2} (utilise UNIQUEMENT ces deux voix, pas d'autres chanteurs).\n`;
-      } else {
-        prompt += `VOIX EXCLUSIVE : ${singer1} (utilise UNIQUEMENT cette voix, très réaliste et fidèle à l'artiste).\n`;
-      }
+      prompt += `TAGS OBLIGATOIRE :\n`;
+      prompt += `- Voix principale : ${singer1}\n`;
+      if (singer2) prompt += `- Voix seconde : ${singer2}\n`;
+      if (title) prompt += `- Titre : ${title}\n`;
+      prompt += `- Langue : ${langText}\n`;
+      if (era) prompt += `- Époque : ${era}\n`;
+      if (radio) prompt += `- Cible radio : ${radio}\n`;
+      if (styles.length) prompt += `- Styles : ${styles.join(", ")}\n`;
+      prompt += `- Ambiance : ${mood}\n`;
+      prompt += `- Structure : ${structure.join(" - ")}\n\n`;
 
-      prompt += `Interdiction totale d'indications entre parenthèses pour les noms des chanteurs. Les parenthèses sont réservées uniquement aux ad-libs.\n\n`;
-
-      if (title) prompt += `Titre : "${title}"\n`;
-      prompt += `Langue : ${langText}\n`;
-      if (era) prompt += `Époque : ${era}\n`;
-      if (radio) prompt += `Style adapté à ${radio}\n`;
-      if (styles.length) prompt += `Styles : ${styles.join(", ")}\n`;
-      prompt += `Ambiance : ${mood}\n`;
-      prompt += `Durée : environ ${duration} minutes\n\n`;
-
-      prompt += `Structure obligatoire : ${structure.join(" - ")}\n\n`;
+      prompt += `Respecte STRICTEMENT tous les tags obligatoires ci-dessus.\n`;
+      prompt += `Utilise UNIQUEMENT les voix indiquées. Pas d'autres chanteurs.\n`;
+      prompt += `Les parenthèses sont réservées UNIQUEMENT aux ad-libs.\n\n`;
 
       if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
-      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir.\n`;
+      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à chanter.\n`;
       if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n`;
       if (adlib) prompt += `Ajoute des ad-libs naturels entre parenthèses quand c'est pertinent.\n\n`;
 
