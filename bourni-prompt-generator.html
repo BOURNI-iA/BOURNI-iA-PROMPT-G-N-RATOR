@@ -12,6 +12,7 @@
     input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333; color: white; }
     .row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .row select, .row input { flex: 1; min-width: 180px; }
+    .checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; margin: 10px 0; }
     button { margin-top: 25px; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; }
     .generate-btn { background: #ff00ff; color: white; }
     .copy-btn { background: #00ff88; color: black; }
@@ -23,18 +24,17 @@
     <h1>BOURNI iA PROMPT GÉNÉRATOR</h1>
 
     <div class="row">
-      <div>
+      <div style="flex:2">
         <label>Titre de la chanson</label>
         <input type="text" id="songTitle" placeholder="ex: A la fin de l’été">
       </div>
-      <div>
-        <label>Langue</label>
-        <select id="language">
-          <option value="français">Français</option>
-          <option value="anglais">Anglais</option>
-          <option value="mix français/anglais">Mix Français/Anglais</option>
-        </select>
-      </div>
+    </div>
+
+    <label>Langue des paroles</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="langFR" checked> Français</label>
+      <label><input type="checkbox" id="langEN"> Anglais</label>
+      <label><input type="checkbox" id="langES"> Espagnol</label>
     </div>
 
     <label>Chanteur 1 (voix principale)</label>
@@ -87,7 +87,7 @@
 
     <label>Paroles (optionnel)</label>
     <textarea id="lyrics" rows="4" placeholder="Colle tes paroles ici si tu veux les imposer..."></textarea>
-    <input type="checkbox" id="autolyrics" checked> <label for="autolyrics" style="display:inline;">Laisser l'IA écrire les paroles</label>
+    <input type="checkbox" id="autolyrics" checked> <label for="autolytics" style="display:inline;">Laisser l'IA écrire les paroles</label>
 
     <label>Durée approximative</label>
     <input type="range" id="duration" min="2" max="4.5" value="3" step="0.5">
@@ -150,11 +150,18 @@
       const era = document.getElementById('era').value;
       const radio = document.getElementById('radioTarget').value;
       const mood = document.getElementById('mood').value;
-      const language = document.getElementById('language').value;
       const lyricsStyle = document.getElementById('lyricsStyle').value;
       const lyrics = document.getElementById('lyrics').value.trim();
       const autolyrics = document.getElementById('autolyrics').checked;
       const duration = document.getElementById('duration').value;
+
+      // Langues
+      let languages = [];
+      if (document.getElementById('langFR').checked) languages.push("français");
+      if (document.getElementById('langEN').checked) languages.push("anglais");
+      if (document.getElementById('langES').checked) languages.push("espagnol");
+
+      let langText = languages.length > 1 ? `Mix ${languages.join(" / ")}` : (languages[0] || "français");
 
       let styles = [];
       document.querySelectorAll('#styleRow select').forEach(s => { if (s.value) styles.push(s.value); });
@@ -165,7 +172,7 @@
       let prompt = `Crée un vrai tube musical ultra-mémorisable, très fredonnable, avec un fort potentiel commercial. `;
 
       if (title) prompt += `Titre : "${title}". `;
-      if (language) prompt += `Langue : ${language}. `;
+      prompt += `Langue : ${langText}. `;
       if (era) prompt += `Époque : ${era}. `;
       if (radio) prompt += `Style adapté à ${radio}. `;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}. `;
