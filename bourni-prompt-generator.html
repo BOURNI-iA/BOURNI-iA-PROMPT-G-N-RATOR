@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- Le head reste identique -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOURNI iA PROMPT GENERATOR</title>
@@ -64,7 +63,6 @@
       position: relative;
     }
 
-    /* MODIFICATION ICI : Alignement parfait du logo et du texte */
     .facebook-link {
       text-align: center;
       margin-bottom: 25px;
@@ -72,7 +70,7 @@
 
     .facebook-link a {
       display: inline-flex;
-      align-items: center; /* Aligne verticalement au centre */
+      align-items: center;
       gap: 8px;
       color: var(--text);
       text-decoration: none;
@@ -88,10 +86,9 @@
     }
 
     .facebook-logo {
-      height: 36px; /* Taille ajustée */
-      width: auto; /* Garde les proportions */
+      height: 36px;
+      width: auto;
     }
-    /* FIN MODIFICATION */
 
     h1::after {
       content: "";
@@ -328,7 +325,6 @@
 <body>
   <div class="container">
     <h1>BOURNI iA PROMPT GENERATOR</h1>
-    <!-- MODIFICATION ICI : Logo et texte dans le même lien pour un alignement parfait -->
     <p class="facebook-link">
       <a href="https://www.facebook.com/61591172133357/" target="_blank" rel="noopener noreferrer">
         Rejoignez-nous vite sur
@@ -638,6 +634,7 @@
       if (radio) prompt += `Cible radio : ${radio}\n`;
       if (styles.length) prompt += `Styles : ${styles.join(", ")}\n`;
       prompt += `Ambiance : ${mood}\n`;
+      prompt += `Durée : ${duration} minutes\n`;  // <-- AJOUT DE LA DURÉE ICI
       prompt += `Structure : ${structure.join(" - ")}\n\n`;
 
       if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
