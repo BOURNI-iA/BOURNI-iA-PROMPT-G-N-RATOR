@@ -56,13 +56,47 @@
       text-align: center;
       color: var(--primary);
       text-shadow: 0 0 20px var(--primary);
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       font-size: 2.5em;
       font-weight: 700;
       letter-spacing: 1px;
       position: relative;
     }
 
+    /* NOUVEAU : Cadre d'explications */
+    .info-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin: 0 auto 25px;
+      max-width: 800px;
+      font-size: 1em;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    /* NOUVEAU : Bouton Ajouter aux favoris */
+    .fav-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .fav-btn:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    /* Lien Facebook */
     .facebook-link {
       text-align: center;
       margin-bottom: 25px;
@@ -88,6 +122,41 @@
     .facebook-logo {
       height: 36px;
       width: auto;
+    }
+
+    /* NOUVEAU : Section des sites IA */
+    .ia-sites-section {
+      text-align: center;
+      margin: 25px 0;
+    }
+
+    .ia-sites-section p {
+      margin-bottom: 15px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .ia-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .ia-logo {
+      height: 40px;
+      width: auto;
+      transition: var(--transition);
+      opacity: 0.9;
+      border-radius: 4px;
+    }
+
+    .ia-logo:hover {
+      opacity: 1;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
     h1::after {
@@ -299,6 +368,12 @@
       .facebook-logo {
         height: 28px;
       }
+      .ia-logos {
+        gap: 15px;
+      }
+      .ia-logo {
+        height: 30px;
+      }
       .buttons-container {
         flex-direction: column;
       }
@@ -311,6 +386,9 @@
       }
       .row {
         flex-direction: column;
+      }
+      .info-box {
+        font-size: 0.9em;
       }
     }
 
@@ -325,12 +403,38 @@
 <body>
   <div class="container">
     <h1>BOURNI iA PROMPT GENERATOR</h1>
+
+    <!-- NOUVEAU : Cadre d'explications -->
+    <div class="info-box">
+      Remplissez simplement les cases, validez, copiez et collez tout simplement le résultat sur un site de génération de musique IA et vous obtiendrez un tube !
+      <br><br>
+      Cette page est en constante évolution,
+      <button onclick="addToFavorites()" class="fav-btn">AJOUTER AUX FAVORIS</button>
+    </div>
+
+    <!-- Lien Facebook avec espace -->
     <p class="facebook-link">
       <a href="https://www.facebook.com/61591172133357/" target="_blank" rel="noopener noreferrer">
         Rejoignez-nous vite sur
         <img src="facebook.png" alt="Facebook" class="facebook-logo">
       </a>
     </p>
+
+    <!-- NOUVEAU : Section des sites IA -->
+    <div class="ia-sites-section">
+      <p>Voici les liens direct vers les sites que vous pouvez utiliser :</p>
+      <div class="ia-logos">
+        <a href="https://www.flowmusic.app/invite/BQFO5K" target="_blank" rel="noopener noreferrer">
+          <img src="flowmusic.png" alt="FlowMusic" class="ia-logo">
+        </a>
+        <a href="https://suno.com/invite/@waltzychoir456" target="_blank" rel="noopener noreferrer">
+          <img src="suno.png" alt="Suno" class="ia-logo">
+        </a>
+        <a href="https://www.udio.com/" target="_blank" rel="noopener noreferrer">
+          <img src="udio.png" alt="Udio" class="ia-logo">
+        </a>
+      </div>
+    </div>
 
     <div class="row">
       <div style="flex: 2;">
@@ -422,6 +526,11 @@
   </div>
 
   <script>
+    // Fonction pour ajouter aux favoris
+    function addToFavorites() {
+      alert("Appuyez sur CTRL+D (Windows/Linux) ou ⌘+D (Mac) pour ajouter cette page à vos favoris.");
+    }
+
     // Liste des corrections d'artistes
     const artistCorrections = {
       "celine dion": "Céline Dion",
@@ -533,156 +642,3 @@
       };
       localStorage.setItem('promptGeneratorParams', JSON.stringify(params));
     }
-
-    // Fonction pour charger les paramètres
-    function loadParameters() {
-      const saved = localStorage.getItem('promptGeneratorParams');
-      if (saved) {
-        try {
-          const params = JSON.parse(saved);
-          document.getElementById('songTitle').value = params.songTitle || '';
-          document.getElementById('singer1').value = params.singer1 || '';
-          document.getElementById('singer2').value = params.singer2 || '';
-          document.getElementById('era').value = params.era || '';
-          document.getElementById('radioTarget').value = params.radioTarget || '';
-          document.getElementById('mood').value = params.mood || '';
-          document.getElementById('lyricsStyle').value = params.lyricsStyle || '';
-          document.getElementById('lyrics').value = params.lyrics || '';
-          document.getElementById('autolyrics').checked = params.autolyrics !== false;
-          document.getElementById('adlib').checked = params.adlib !== false;
-          document.getElementById('duration').value = params.duration || 3;
-          document.getElementById('langFR').checked = params.langFR !== false;
-          document.getElementById('langEN').checked = params.langEN !== false;
-          document.getElementById('langES').checked = params.langES !== false;
-
-          // Charger les styles
-          if (params.styles) {
-            document.querySelectorAll('#styleRow select').forEach((s, i) => {
-              s.value = params.styles[i] || '';
-            });
-          }
-
-          // Charger la structure
-          if (params.structure) {
-            document.querySelectorAll('#structureRow select').forEach((s, i) => {
-              s.value = params.structure[i] || '';
-            });
-          }
-
-          // Mettre à jour l'affichage de la durée
-          document.getElementById('durationValue').textContent = (params.duration || 3) + " minutes";
-        } catch (e) {
-          console.error("Erreur de chargement des paramètres:", e);
-        }
-      }
-    }
-
-    // Fonction pour générer le prompt
-    function generatePrompt() {
-      const title = document.getElementById('songTitle').value.trim();
-      let singer1 = document.getElementById('singer1').value.trim() || "un artiste";
-      let singer2 = document.getElementById('singer2').value.trim();
-      const era = document.getElementById('era').value;
-      const radio = document.getElementById('radioTarget').value;
-      const mood = document.getElementById('mood').value;
-      const lyricsStyle = document.getElementById('lyricsStyle').value;
-      const lyrics = document.getElementById('lyrics').value.trim();
-      const autolyrics = document.getElementById('autolyrics').checked;
-      const adlib = document.getElementById('adlib').checked;
-      const duration = document.getElementById('duration').value;
-
-      // Correction des noms d'artistes
-      singer1 = artistCorrections[singer1.toLowerCase()] || singer1;
-      if (singer2) singer2 = artistCorrections[singer2.toLowerCase()] || singer2;
-
-      // Langues
-      let languages = [];
-      if (document.getElementById('langFR').checked) languages.push("français");
-      if (document.getElementById('langEN').checked) languages.push("anglais");
-      if (document.getElementById('langES').checked) languages.push("espagnol");
-      let langText = languages.length > 1 ? `Mix ${languages.join(" / ")}` : (languages[0] || "français");
-
-      // Styles
-      let styles = [];
-      document.querySelectorAll('#styleRow select').forEach(s => { if (s.value) styles.push(s.value); });
-
-      // Structure
-      let structure = [];
-      document.querySelectorAll('#structureRow select').forEach(s => { if (s.value) structure.push(s.value); });
-
-      // Construction du prompt
-      let prompt = `CRÉE UN VRAI TUBE ULTRA-MÉMORISABLE ET FREDONNABLE.\n\n`;
-
-      // NOUVELLE VERSION POUR LES DUOS (sans noms dans les paroles)
-      if (singer2) {
-        prompt += `TAGS OBLIGATOIRE : ${singer1}, ${singer2}, Duet\n`;
-        prompt += `=== ⚠️ VOICE SEPARATION (MANDATORY) ===\n`;
-        prompt += `This is a duet. The AI MUST generate TWO DISTINCT VOCAL TRACKS.\n`;
-        prompt += `Each artist sings their own parts WITHOUT naming them in the lyrics.\n`;
-        prompt += `Both voices must be clearly separated (left/right channels).\n`;
-        prompt += `❌ NEVER mention the artists' names in the lyrics.\n`;
-        prompt += `❌ NEVER merge the voices in the same phrase.\n\n`;
-      } else {
-        prompt += `TAGS OBLIGATOIRE : ${singer1}\n`;
-      }
-
-      prompt += `Respecte STRICTEMENT les tags obligatoires ci-dessus.\n\n`;
-
-      if (title) prompt += `Titre : "${title}"\n`;
-      prompt += `Langue : ${langText}\n`;
-      if (era) prompt += `Époque : ${era}\n`;
-      if (radio) prompt += `Cible radio : ${radio}\n`;
-      if (styles.length) prompt += `Styles : ${styles.join(", ")}\n`;
-      prompt += `Ambiance : ${mood}\n`;
-      prompt += `Durée : ${duration} minutes\n`;  // <-- AJOUT DE LA DURÉE ICI
-      prompt += `Structure : ${structure.join(" - ")}\n\n`;
-
-      if (lyricsStyle) prompt += `Style des paroles : ${lyricsStyle}\n`;
-      if (autolyrics) prompt += `Écris des paroles complètes, percutantes et faciles à retenir.\n`;
-      if (lyrics) prompt += `Paroles à utiliser : ${lyrics}\n`;
-      if (adlib) prompt += `Ajoute des ad-libs naturels entre parenthèses.\n\n`;
-
-      prompt += `Mélodie extrêmement catchy avec un refrain puissant qui reste en tête dès la première écoute. Production professionnelle, mix radio puissant.`;
-
-      // Afficher le résultat
-      document.getElementById('result').textContent = prompt;
-      saveParameters();
-    }
-
-    // Fonction pour copier le prompt avec feedback visuel
-    function copyPrompt() {
-      const resultDiv = document.getElementById('result');
-      const text = resultDiv.textContent;
-
-      if (!text) {
-        alert("⚠️ Génère d'abord un prompt !");
-        return;
-      }
-
-      // Copier dans le presse-papiers
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          const copyBtn = document.querySelector('.copy-btn');
-          const originalText = copyBtn.innerHTML;
-          copyBtn.innerHTML = "✅ COPIÉ !";
-          copyBtn.classList.add('copied');
-
-          setTimeout(() => {
-            copyBtn.innerHTML = originalText;
-            copyBtn.classList.remove('copied');
-          }, 2000);
-        })
-        .catch(() => {
-          // Fallback pour les anciens navigateurs
-          const textarea = document.createElement('textarea');
-          textarea.value = text;
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
-          alert("✅ Prompt copié dans le presse-papiers !");
-        });
-    }
-  </script>
-</body>
-</html>
